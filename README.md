@@ -27,7 +27,7 @@ python cli.py --query "suggest an emoji for the word: tired"
 
 ## Acknowledgements
 
-I would like to acknowledge the owner of the `llm-emoji-dataset`.
+I would like to acknowledge the [owner](https://huggingface.co/badrex) of the `llm-emoji-dataset`.
 
 ## Contribution
 
