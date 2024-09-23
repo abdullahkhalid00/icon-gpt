@@ -4,7 +4,6 @@ import warnings
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-from pymongo.operations import SearchIndexModel
 from sentence_transformers import SentenceTransformer
 
 load_dotenv()
