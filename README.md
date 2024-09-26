@@ -14,15 +14,23 @@ cd emoGPT
 Create a python virtual environment and install the necessary dependencies.
 
 ```bash
-python -m venv venv
+python -m venv .<env-name>
 venv\Scripts\activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-Run the `cli.py` file from your terminal and pass your phrase as `--query "<your-query>"`.
+### Test FastAPI endpoint
+
+Ping the `/search` endpoint by running `app.py` via FastAPI CLI or uvicorn.
 
 ```bash
-python cli.py --query "suggest an emoji for the word: tired"
+fastapi dev app.py
+```
+
+Either use the interactive API docs or ping the endpoint by making a request via `cURL` or `requests`.
+
+```bash
+curl -X POST http://<host>:<port>/search -H "Content-type: application/json" -d '{"query": "<your-query>"}'
 ```
 
 ## Acknowledgements
@@ -31,4 +39,4 @@ I would like to acknowledge the [owner](https://huggingface.co/badrex) of the `l
 
 ## Contribution
 
-Feel free to open up a pull request or an issue.
+Feel free to open up a pull request or create an issue.
