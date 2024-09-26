@@ -7,7 +7,9 @@ from pymongo.server_api import ServerApi
 from sentence_transformers import SentenceTransformer
 
 load_dotenv()
+
 warnings.filterwarnings('ignore')
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -28,22 +30,33 @@ def ping_mongodb_connection(uri):
         return client
     except Exception as e:
         logger.error(f'Failed to connect to MongoDB with error: {e}')
+        raise e
 
-
-def get_search_results(query_embedding, model=SentenceTransformer('nomic-ai/nomic-embed-text-v1', trust_remote_code=True)):
-    client = ping_mongodb_connection(os.getenv('uri'))
-    db = client[os.getenv('db_name')]
-    coll = db[os.getenv('coll_name')]
+def get_search_results(query, top_k=3, model=model):
+    uri = os.getenv('uri')
+    db_name = os.getenv('db_name')
+    coll_name = os.getenv('coll_name')
     vector_index = os.getenv('vector_index')
+
+    if not all([uri, db_name, coll_name, vector_index]):
+        error = 'One or more env variables are missing.'
+        logger.error(error)
+        raise EnvironmentError(error)
+    
+    client = ping_mongodb_connection(uri)
+    db = client[db_name]
+    coll = db[coll_name]
+
     try:
+        query_embedding = model.encode(query).tolist()
         pipeline = [
             {
                 '$vectorSearch': {
                     'index': vector_index,
-                    'queryVector': model.encode(query_embedding).tolist(),
+                    'queryVector': query_embedding,
                     'path': 'embeddings',
                     'exact': True,
-                    'limit': 3
+                    'limit': top_k
                 }
             },
             {
@@ -60,7 +73,8 @@ def get_search_results(query_embedding, model=SentenceTransformer('nomic-ai/nomi
             }
         ]
         results = coll.aggregate(pipeline)
-        logger.info(f'Generated search results successfully.')
+        logger.info('Generated search results successfully.')
         return list(results)
     except Exception as e:
         logger.error(f'Failed to run vector search with error: {e}')
+        raise e
