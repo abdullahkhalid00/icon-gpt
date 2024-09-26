@@ -11,6 +11,14 @@ warnings.filterwarnings('ignore')
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+try:
+    logger.info('Loading SentenceTransformer model...')
+    model = SentenceTransformer('nomic-ai/nomic-embed-text-v1', trust_remote_code=True)
+    logger.info('Model loaded successfully.')
+except Exception as e:
+    logger.error(f'Failed to load SentenceTransformer model: {e}')
+    raise e
+
 
 def ping_mongodb_connection(uri):
     client = MongoClient(uri, server_api=ServerApi('1'))
