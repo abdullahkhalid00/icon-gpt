@@ -1,4 +1,4 @@
-# emoGPT 🙂🙃
+# IconGPT 🤖
 
 A tool to generate an emoji based on an emotion, sentence, phrase or even a single word. Implements simple RAG on the [`llm-emoji-dataset`](https://huggingface.co/datasets/badrex/llm-emoji-dataset) by using MongoDB Atlas Vector search for semantic similarity.
 
