@@ -32,7 +32,7 @@ def ping_mongodb_connection(uri):
         logger.error(f'Failed to connect to MongoDB with error: {e}')
         raise e
 
-def get_search_results(query, top_k=3, model=model):
+def get_search_results(query, top_k, model=model):
     uri = os.getenv('uri')
     db_name = os.getenv('db_name')
     coll_name = os.getenv('coll_name')

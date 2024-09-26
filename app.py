@@ -21,9 +21,9 @@ async def read_root():
     return 'FastAPI endpoint running at /search', 200
 
 @app.post('/search', response_model=SearchResponse, description='Runs a vector search on the deployed MongoDB collection.')
-async def search_database(query: str):
+async def search_database(query: str, top_k: int = 5):
     try:
-        results = get_search_results(query)
+        results = get_search_results(query, top_k)
         return {'results': results}
     except Exception as e:
         return {'error': str(e)}
