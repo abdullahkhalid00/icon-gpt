@@ -1,4 +1,5 @@
 import os
+import torch
 import logging
 import warnings
 
@@ -29,11 +30,18 @@ except Exception as e:
     logger.error(f'Failed to configure MongoDB (check .env): {e}')
     raise
 
+# configure inference device
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+if device == 'cpu':
+    logger.warning(
+        f'CUDA is recommended. Please consult README.md for installation instructions.')
+
 # pre-load embedding model
 try:
     logger.info('Loading SentenceTransformer model...')
-    model = SentenceTransformer(os.getenv('embedding_model'), trust_remote_code=True)
-    logger.info('Model loaded successfully.')
+    model = SentenceTransformer(
+        os.getenv('embedding_model'), trust_remote_code=True, device=device)
+    logger.info(f'Model loaded successfully on: {device}.')
 except Exception as e:
     logger.error(f'Failed to load SentenceTransformer model: {e}')
     raise
