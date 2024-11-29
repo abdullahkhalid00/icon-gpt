@@ -2,35 +2,50 @@
 
 A tool to generate an emoji based on an emotion, sentence, phrase or even a single word. Implements simple RAG on the [`llm-emoji-dataset`](https://huggingface.co/datasets/badrex/llm-emoji-dataset) by using MongoDB Atlas Vector search for semantic similarity.
 
-## Run locally on CLI
+## Usage and Setup
 
 Clone the GitHub repository and navigate to the root folder.
 
-```bash
-git clone <repo-link>
-cd emoGPT
-```
-
-Create a python virtual environment and install the necessary dependencies.
+Install the necessary dependencies.
 
 ```bash
-python -m venv .<env-name>
-venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-### Test FastAPI endpoint
-
-Ping the `/search` endpoint by running `app.py` via FastAPI CLI or uvicorn.
+Now run [`app.py`](./app.py) using this command.
 
 ```bash
-fastapi dev app.py
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Either use the interactive API docs or ping the endpoint by making a request via `cURL` or `requests`.
+Open a browser and go to <http://localhost:8000/docs> to test the endpoint.
+
+### CPU Inference
+
+Just install torch for CPU to get started.
 
 ```bash
-curl -X POST http://<host>:<port>/search -H "Content-type: application/json" -d '{"query": "<your-query>"}'
+python -m pip install torch
+```
+
+### Setting up CUDA (Optional)
+
+`cuda` is recommended for a faster inference if you have a GPU available.
+
+Install the NVIDIA CUDA Toolkit (version greater than or equal to 11.8) and `torch >= 11.8`.
+
+> Note: Make sure the toolkit and `torch` have same versions (i.e., 11.8)
+
+```bash
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+```
+
+Now run the following command in a Python shell to confirm installation.
+
+```python
+>> import torch
+>> print(torch.cuda.is_available())
+True
 ```
 
 ## Acknowledgements
