@@ -1,36 +1,31 @@
-import logging
 import os
+import logging
 import warnings
+
 from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from pymongo.mongo_client import MongoClient
 from sentence_transformers import SentenceTransformer
 
+# load .env
 load_dotenv()
 
+# ignore warnings
 warnings.filterwarnings('ignore')
 
+# configure logger
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+# pre-load embedding model
 try:
     logger.info('Loading SentenceTransformer model...')
-    model = SentenceTransformer('nomic-ai/nomic-embed-text-v1', trust_remote_code=True)
+    model = SentenceTransformer(os.getenv('embedding_model'), trust_remote_code=True)
     logger.info('Model loaded successfully.')
 except Exception as e:
     logger.error(f'Failed to load SentenceTransformer model: {e}')
-    raise e
+    raise
 
-
-def ping_mongodb_connection(uri):
-    client = MongoClient(uri, server_api=ServerApi('1'))
-    try:
-        client.admin.command('ping')
-        logger.info('Pinged MongoDB deployment. Connection successful.')
-        return client
-    except Exception as e:
-        logger.error(f'Failed to connect to MongoDB with error: {e}')
-        raise e
 
 def get_search_results(query, top_k, model=model):
     uri = os.getenv('uri')
@@ -77,4 +72,4 @@ def get_search_results(query, top_k, model=model):
         return list(results)
     except Exception as e:
         logger.error(f'Failed to run vector search with error: {e}')
-        raise e
+        raise
