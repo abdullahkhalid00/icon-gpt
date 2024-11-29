@@ -17,6 +17,8 @@ warnings.filterwarnings('ignore')
 # configure logger
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+logging.getLogger('sentence_transformers').setLevel(logging.ERROR)
+logging.getLogger('transformers_modules').setLevel(logging.ERROR)
 
 # pre-load mongodb config
 try:
@@ -46,7 +48,8 @@ except Exception as e:
     logger.error(f'Failed to load SentenceTransformer model: {e}')
     raise
 
-
+# TODO: add CLI support
+# run Atlas vector search to get similar vectors
 def get_search_results(query, top_k, model=model):
     try:
         query_embedding = model.encode(
