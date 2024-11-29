@@ -49,7 +49,8 @@ except Exception as e:
 
 def get_search_results(query, top_k, model=model):
     try:
-        query_embedding = model.encode(query).tolist()
+        query_embedding = model.encode(
+            query, show_progress_bar=False, normalize_embeddings=False).tolist()
         pipeline = [
             {
                 '$vectorSearch': {
