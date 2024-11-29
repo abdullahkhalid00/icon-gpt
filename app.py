@@ -1,6 +1,6 @@
+from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
 
 from search import get_search_results
 
@@ -8,6 +8,7 @@ app = FastAPI()
 
 class SearchResult(BaseModel):
     emoji: str
+    # TODO: add unicode: str
     tags: List[str]
     short_description: str
     long_description: str
