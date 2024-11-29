@@ -17,6 +17,18 @@ warnings.filterwarnings('ignore')
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+# pre-load mongodb config
+try:
+    logger.info('Loading MongoDB config...')
+    client = MongoClient(os.getenv('uri'), server_api=ServerApi('1'))
+    db = client[os.getenv('db_name')]
+    coll = db[os.getenv('coll_name')]
+    vector_index = os.getenv('vector_index')
+    logger.info('Config loaded successfully.')
+except Exception as e:
+    logger.error(f'Failed to configure MongoDB (check .env): {e}')
+    raise
+
 # pre-load embedding model
 try:
     logger.info('Loading SentenceTransformer model...')
@@ -28,20 +40,6 @@ except Exception as e:
 
 
 def get_search_results(query, top_k, model=model):
-    uri = os.getenv('uri')
-    db_name = os.getenv('db_name')
-    coll_name = os.getenv('coll_name')
-    vector_index = os.getenv('vector_index')
-
-    if not all([uri, db_name, coll_name, vector_index]):
-        error = 'One or more env variables are missing.'
-        logger.error(error)
-        raise EnvironmentError(error)
-    
-    client = ping_mongodb_connection(uri)
-    db = client[db_name]
-    coll = db[coll_name]
-
     try:
         query_embedding = model.encode(query).tolist()
         pipeline = [
