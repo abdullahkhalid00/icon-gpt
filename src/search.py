@@ -32,6 +32,20 @@ except Exception as e:
     logger.error(f'Failed to configure MongoDB (check .env): {e}')
     raise
 
+# create transformers cache folder
+cache_folder = os.getenv('HF_HOME')
+logging.info(f'Creating transformers cache directory at: {cache_folder}')
+if not os.path.exists(cache_folder):
+    try:
+        os.makedirs(cache_folder, exist_ok=True)
+        os.chmod(cache_folder, 0o777)
+        logging.info(f'Cache directory created successfully.')
+    except Exception as e:
+        logging.error(f'Failed to create transformers cache directory: {e}')
+        raise
+else:
+    logging.info(f'{cache_folder} already exists.')
+
 # configure inference device
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 if device == 'cpu':
@@ -42,13 +56,14 @@ if device == 'cpu':
 try:
     logger.info('Loading SentenceTransformer model...')
     model = SentenceTransformer(
-        os.getenv('embedding_model'), trust_remote_code=True, device=device)
+        os.getenv('embedding_model'), trust_remote_code=True,
+        device=device, cache_folder=cache_folder)
     logger.info(f'Model loaded successfully on: {device}.')
 except Exception as e:
     logger.error(f'Failed to load SentenceTransformer model: {e}')
     raise
 
-# TODO: add CLI support
+
 # run Atlas vector search to get similar vectors
 def get_search_results(query, top_k, model=model):
     try:
