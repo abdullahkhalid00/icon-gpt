@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.search import get_search_results
 
@@ -14,6 +15,10 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*'],
 )
+
+class SearchRequest(BaseModel):
+    query: str
+    top_k: int = 5
 
 class SearchResult(BaseModel):
     emoji: str
@@ -34,9 +39,9 @@ async def read_root():
 @app.post(
     '/search', response_model=SearchResponse,
     description='Runs a vector search on the deployed MongoDB collection.')
-async def search_database(query: str, top_k: int = 5):
+async def search_database(request: SearchRequest):
     try:
-        results = get_search_results(query, top_k)
+        results = get_search_results(request.query, request.top_k)
         return {'results': results}
     except Exception as e:
         return {'error': str(e)}
