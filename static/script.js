@@ -1,11 +1,11 @@
 document.getElementById('queryForm').addEventListener('submit', async function(event) {
     event.preventDefault()
-    
+
     const queryInput = document.getElementById('queryInput').value.trim()
     const resultsTable = document.getElementById('resultsTable')
     const resultsTableBody = resultsTable.querySelector('tbody')
     resultsTableBody.innerHTML = ''
-    
+
     if (!queryInput.trim()) {
         alert('Please enter a keyword.')
         return
@@ -14,17 +14,14 @@ document.getElementById('queryForm').addEventListener('submit', async function(e
     try {
         const response = await fetch('http://127.0.0.1:8000/search', {
             method: 'POST',
-            body: JSON.stringify({
-                query: queryInput,
-                top_k: 3
-            }),
+            body: JSON.stringify({ query: queryInput }),
             headers: {
                 'Content-type': 'application/json'
             }
         })
 
-const data = await response.json()
-        
+        const data = await response.json()
+
         data.results.forEach((result) => {
             const row = document.createElement('tr')
 
