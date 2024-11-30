@@ -4,16 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IconGPT</title>
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <h1>IconGPT 😊</h1>
-    <p>Turn keywords and sentences into your favorite emojis.</p>
-    <form id="queryForm">
-        <input type="text" name="query" id="queryInput" placeholder="Enter a keyword" required>
-        <button type="submit">Suggest</button>
-    </form>
-    <div id="results"></div>
-    <script src="../static/script.js"></script>
+        <div class="container">
+        <h1>IconGPT</h1>
+        <p class="description">Discover icons that match your thoughts!</p>
+        
+        <form id="queryForm">
+            <input 
+                type="text" 
+                id="queryInput" 
+                placeholder="Enter a keyword or a sentence"
+                class="input-box"
+            >
+            <button type="submit" class="suggest-button">Suggest</button>
+        </form>
+
+        <div id="resultsContainer" class="results-container">
+            <table id="resultsTable" class="results-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Icon</th>
+                        <th>Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <script src="../static/script.js"></script>
+    
+    </div>
 </body>
 </html>

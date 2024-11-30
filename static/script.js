@@ -1,13 +1,14 @@
 document.getElementById('queryForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+    event.preventDefault()
     
-    const queryInput = document.getElementById('queryInput').value;
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '';
+    const queryInput = document.getElementById('queryInput').value.trim()
+    const resultsTable = document.getElementById('resultsTable')
+    const resultsTableBody = resultsTable.querySelector('tbody')
+    resultsTableBody.innerHTML = ''
     
     if (!queryInput.trim()) {
-        resultsDiv.innerText = 'Please enter a keyword.';
-        return;
+        alert('Please enter a keyword.')
+        return
     }
 
     try {
@@ -22,14 +23,27 @@ document.getElementById('queryForm').addEventListener('submit', async function(e
             }
         })
 
-        data = await response.json()
+const data = await response.json()
         
-        data.results.forEach(result => {
-            const emojiDiv = document.createElement('div')
-            emojiDiv.innerHTML = `<p>${result.emoji} - ${result.short_description}</p>`
-            resultsDiv.appendChild(emojiDiv)
+        data.results.forEach((result) => {
+            const row = document.createElement('tr')
+
+            const iconCell = document.createElement('td')
+            iconCell.innerHTML = `
+                ${result.emoji} 
+                <span class="copy-icon" onclick="navigator.clipboard.writeText('${result.emoji}')">📋</span>
+            `
+            row.appendChild(iconCell)
+
+            const tagsCell = document.createElement('td')
+            tagsCell.textContent = result.tags.slice(0, 3).join(', ')
+            row.appendChild(tagsCell)
+
+            resultsTableBody.appendChild(row)
         })
-    } catch(e) {
-        resultsDiv.innerText = `An error occurred: ${e.message}`
+
+        resultsTable.style.display = 'table'
+    } catch (e) {
+        alert(`An error occurred: ${e.message}`)
     }
-});
+})
