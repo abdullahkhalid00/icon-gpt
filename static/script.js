@@ -6,7 +6,7 @@ document.getElementById('queryForm').addEventListener('submit', async function(e
     const resultsTableBody = resultsTable.querySelector('tbody')
     resultsTableBody.innerHTML = ''
 
-    if (!queryInput.trim()) {
+    if (!queryInput) {
         alert('Please enter a keyword.')
         return
     }
