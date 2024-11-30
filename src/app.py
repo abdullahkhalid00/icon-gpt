@@ -2,7 +2,7 @@ from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from search import get_search_results
+from src.search import get_search_results
 
 app = FastAPI()
 
